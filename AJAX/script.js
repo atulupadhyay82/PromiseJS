@@ -33,6 +33,61 @@ const countriesContainer = document.querySelector('.countries');
 //     });
 //   };
 
+
+const renderCountry = function (data, className = '') {
+  const html = `
+  <article class="country ${className}">
+    <img class="country__img" src="${data.flag}" />
+    <div class="country__data">
+      <h3 class="country__name">${data.name}</h3>
+      <h4 class="country__region">${data.region}</h4>
+      <p class="country__row"><span>👫</span>${(
+        +data.population / 1000000
+      ).toFixed(1)} people</p>
+      <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+      <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+    </div>
+  </article>
+  `;
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
+};
+
+// /**
+//  * Welcome to Callback Hell - When we have a lot of nested callbacks in order to execute asynchronous tasks in sequence.
+//  * And in fact, this happens for all asynchronous tasks,  which are handled by callbacks.  And not just AJAX calls. 
+//  * The problem with callback hell  is that it makes our code look very messy.  But even more important,  
+//  * it makes our code harder to maintain,  and very difficult to understand, And fortunately for us, since ES6,  
+//  * there is actually a way of escaping callback hell  by using something called promises.  
+//  */ 
+// const getCountryAndNeighbour = function (country) {
+//   // AJAX call country 1
+//   const request = new XMLHttpRequest();
+//   request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
+//   request.send();
+//   request.addEventListener('load', function () {
+//     const [data] = JSON.parse(this.responseText);
+//     console.log(data);
+//     // Render country 1
+//     renderCountry(data);
+//     // Get neighbour country (2)
+//     const [neighbour] = data.borders;
+//     if (!neighbour) return;
+//     // AJAX call country 2
+//     const request2 = new XMLHttpRequest();
+//     request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
+//     request2.send();
+//     request2.addEventListener('load', function () {
+//       const data2 = JSON.parse(this.responseText);
+//       console.log(data2);
+//       renderCountry(data2, 'neighbour');
+//     });
+//   });
+// };
+// getCountryAndNeighbour('portugal');
+// getCountryAndNeighbour('usa');
+// getCountryAndNeighbour('pakistan');
+
 // /**
 //  * let's replace the old XML HTTP request function  with the modern way of making AJAX calls which is Fetch API
 //  * Defining the promises-- Fetch API call
@@ -81,7 +136,7 @@ const countriesContainer = document.querySelector('.countries');
 const getCountryData = country => {
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
   .then(response => response.json())
-  .then(data => console.log(data))
+  .then(data => renderCountry(data[0]))
 };
 
 
