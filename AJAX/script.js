@@ -130,18 +130,50 @@ const renderCountry = function (data, className = '') {
 //     });
 // };
 
+// /**
+//  * Above function optimized using arrow functions.
+//  * With promieses, we get the rid of callback hell but not callbacks.
+//  */
+// const getCountryData = country => {
+//   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//   .then(response => response.json())
+//   .then(data => renderCountry(data[0]))
+// };
+
+
+// getCountryData('portugal');
+// getCountryData('usa');
+// getCountryData('korea');
+
+
 /**
- * Above function optimized using arrow functions 
+ * Chaining of Promises * 
+ * 
+ * Here we first get data about the country we passed in the method.
+ * From 1st AJAX call, we also retrieve the neighboring country.  And so again,  the second Ajax call depends on the data
+ * from the first call.  And so they need to be done in sequence.
+ * let's get the neighbor and we already know  that it is at data zero at borders. And if there is no neighbor,  
+ * then return immediately. So even if we wanted the neighbor  of the neighbor,  like 10 countries,  
+ * we could easily do this by chaining all these promises  one after another and all without the callback hell.  
+ * So here, instead of the callback  hell we have what we call a flat chain of promises.  
+ * And this one is again,  very easy to understand and to read.  
  */
-const getCountryData = country => {
+const getCountryByData= function(country){
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
   .then(response => response.json())
-  .then(data => renderCountry(data[0]))
+  .then(data => {
+      renderCountry(data[0]);
+      const neighbour=data[0].borders[0];
+      if(!neighbour) return;
+      return  fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+  })
+  .then(response => response.json())
+  .then(data =>  renderCountry(data,'neighbour'));
 };
 
+getCountryByData('usa');
+getCountryByData('germany');
+getCountryByData('australia');
 
 
-  getCountryData('portugal');
-  getCountryData('usa');
-  getCountryData('korea');
 
