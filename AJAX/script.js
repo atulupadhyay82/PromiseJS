@@ -327,4 +327,11 @@ getCountryByData('australia');
 // getCountryByData('australia');
 
 
+// e1= document.querySelector('img');
+// e1.src='dog.jpg';
+// e1.addEventListener('load', () =>{
+//   e1.classList.add('fadeIn');
+// })
 
+// fetch('http://someurl.com/api')
+// .then(res => console.log(res));
