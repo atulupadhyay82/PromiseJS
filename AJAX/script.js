@@ -5,6 +5,8 @@ const countriesContainer = document.querySelector('.countries');
 
 const renderError= function(msg){
   console.log(msg);
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
 }
 
 /**
@@ -317,7 +319,7 @@ const getCountryByData= function(country){
 };
 
 
-getCountryByData('usa');
+getCountryByData('australia');
 
 
 // getCountryByData('usa');
