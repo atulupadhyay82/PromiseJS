@@ -221,32 +221,108 @@ const renderCountry = function (data, className = '') {
 
  * @param {*} country 
  */
+// const getCountryByData= function(country){
+//   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//   .then(response => response.json())
+//   .then(data => {
+//       renderCountry(data[0]);
+//       const neighbour=data[0].borders[0];
+//       if(!neighbour) return;
+//       return  fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+//   })
+//   .then(response => response.json())
+//   .then(data =>  renderCountry(data,'neighbour'))
+//   .catch(err => {
+//     renderError(`Something went wrong  ${err.message}`);
+//   })
+//   .finally (()=> {
+//     //Make spinning wheel or progress bar disappear from the UI 
+//     //And then the callback function that we defined here will always be called whatever happens with the promise. 
+//     // So no matter if the promise is fulfilled or rejected  this callback function that we define here  is gonna be called always
+//   })
+// };
+
+
+
+/**
+ * Throwing an error manually 
+ * for cases like when the API is to search for a country  that simply doesn't exist. In such case
+ * promise will be fullfilled, not rejected as there is no error. But technically this is an error. 
+ * if the status code is 404, then response OK flag would be false whereas status code is 200, then response OK flag is true.
+ * We need to throw an error forcefully whenever we get 404 from the API.
+ * 
+ * throwing an error in any of these then methods  is that the promise will immediately be rejected and that rejection will then propagate all the way down 
+ *  to the catch handler, which we already have set up here.
+ */
+// const getCountryByData= function(country){
+//   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//   .then(response => {
+//       if(!response.ok){
+//           throw new Error(`Country not found ${response.status}`);
+//       }
+//       return response.json();
+//   })
+//   .then(data => {
+//       renderCountry(data[0]);
+//       const neighbour="dsccs"
+//       if(!neighbour) return;
+//       return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+//   })
+//   .then(response => {  
+//       if(!response.ok){
+//           throw new Error(`Country not found ${response.status}`);
+//        }
+//   return response.json();
+//   })
+//   .then(data =>  renderCountry(data,'neighbour'))
+//   .catch(err => {
+//       renderError(`Something went wrong  ${err.message}`);
+//   })
+//   .finally (()=> {
+//       //Make spinning wheel or progress bar dissappear from the UI
+//   })
+// };
+
+/**
+ * Optimizing the above piece of code as we have all this duplicate code here.I think that it's a good time 
+ * to actually create ourselves a really nice helper function.  
+ * And this helper function will wrap up  the fetch, the error handling,  and also the conversion to JSON, 
+ */
+const getJSON = function(url,errorMessage = 'Something went wrong'){
+  return fetch(url)
+ .then(response => {
+  if(!response.ok){
+      throw new Error(`${errorMessage} ${response.status}`);
+  }
+  return response.json();
+  });
+}
+
+
 const getCountryByData= function(country){
-  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-  .then(response => response.json())
+  getJSON(`https://restcountries.eu/rest/v2/name/${country}`,'Country not found')
   .then(data => {
       renderCountry(data[0]);
       const neighbour=data[0].borders[0];
-      if(!neighbour) return;
-      return  fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
-  })
-  .then(response => response.json())
-  .then(data =>  renderCountry(data,'neighbour'))
+      if(!neighbour) throw new Error("No neighbour is found");
+      return getJSON(`https://restcountries.eu/rest/v2/alpha/${neighbour}`,'Country not found');   
+   })
+  .then(data => renderCountry(data,'neighbour'))
   .catch(err => {
-    renderError(`Something went wrong  ${err.message}`);
+      renderError(`Something went wrong  ${err.message}`);
   })
   .finally (()=> {
-    //Make spinning wheel or progress bar disappear from the UI 
-    //And then the callback function that we defined here will always be called whatever happens with the promise. 
-    // So no matter if the promise is fulfilled or rejected  this callback function that we define here  is gonna be called always
-  })
-
-  
+      //Make spinning wheel or progress bar dissappear from the UI
+  })    
 };
 
+
 getCountryByData('usa');
-getCountryByData('germany');
-getCountryByData('australia');
+
+
+// getCountryByData('usa');
+// getCountryByData('germany');
+// getCountryByData('australia');
 
 
 
