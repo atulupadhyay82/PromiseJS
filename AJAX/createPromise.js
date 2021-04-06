@@ -76,25 +76,28 @@
 app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   next();
+
+  Access to fetch at 'http://localhost:8082/iphones' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
 });
  */
-const getPhone= function() {
-    const iphoneUrl = "http://localhost:8081/iphones";
-    fetch(iphoneUrl, {
-        'method' :'GET'
-    })
-    .then(response => response.json())
-    .then(result =>  console.log(result.data))
-    .catch(error => console.log(error));
+// const getPhone= function() {
+//     const iphoneUrl = "http://localhost:8082/iphones";
+//     fetch(iphoneUrl, {
+//         'method' :'GET'
+//     })
+//     .then(response => response.json())
+//     .then(result =>  console.log(result.data))
+//     .catch(error => console.log(error));
 
-    const watchURL = "http://localhost:8081/watches";
-    fetch(watchURL, {
-        'method' :'GET'
-    })
-    .then(response => response.json())
-    .then(result =>  console.log(result.data))
-    .catch(error => console.log(error));
-  }
+//     const watchURL = "http://localhost:8082/watches";
+//     fetch(watchURL, {
+//         'method' :'GET'
+//     })
+//     .then(response => response.json())
+//     .then(result =>  console.log(result.data))
+//     .catch(error => console.log(error));
+//   }
   
-  getPhone();
-  console.log("first");
+//   getPhone();
+//   console.log("first");
+
